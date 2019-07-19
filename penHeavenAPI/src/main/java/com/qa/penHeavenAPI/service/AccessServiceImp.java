@@ -4,18 +4,25 @@ import javax.inject.Inject;
 
 import com.qa.penHeavenAPI.exceptions.AccountNotFoundException;
 import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
+import com.qa.penHeavenAPI.persistence.domain.Account;
 import com.qa.penHeavenAPI.persistence.repo.AccessRepo;
+import com.qa.penHeavenAPI.util.JSONUtil;
 
 public class AccessServiceImp implements AccessService {
 
 	@Inject
 	private AccessRepo accessRepo;
 
+	@Inject
+	JSONUtil j = new JSONUtil();
+
 	public String getAllAccounts() {
 		return this.accessRepo.getAllAccounts();
 	}
 
 	public String createAccount(String account) {
+		String a = j.getObjectForJSON(account, Account.class).getEmail();
+
 		return this.accessRepo.createAccount(account);
 	}
 

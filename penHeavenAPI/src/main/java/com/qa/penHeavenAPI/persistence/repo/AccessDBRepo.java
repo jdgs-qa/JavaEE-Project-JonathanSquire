@@ -88,7 +88,6 @@ public class AccessDBRepo implements AccessRepo {
 	}
 
 	@Transactional(value = TxType.REQUIRED)
-
 	public String createItem(String item) {
 		this.em.persist(j.getObjectForJSON(item, CatalogueItem.class));
 		return SUCCESS_ADD_ITEM;

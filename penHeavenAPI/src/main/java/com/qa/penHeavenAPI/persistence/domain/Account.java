@@ -1,5 +1,6 @@
 package com.qa.penHeavenAPI.persistence.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +15,8 @@ public class Account {
 	private String userName;
 	private String firstName;
 	private String lastName;
+
+	@Column(unique = true)
 	private String email;
 
 	public Long getUserId() {
