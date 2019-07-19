@@ -5,7 +5,7 @@
   <groupId>com.qa</groupId>
   <artifactId>penHeavenAPI</artifactId>
   <version>0.1beta</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <name>penHeavenAPI</name>
   <url>http://maven.apache.org</url>
