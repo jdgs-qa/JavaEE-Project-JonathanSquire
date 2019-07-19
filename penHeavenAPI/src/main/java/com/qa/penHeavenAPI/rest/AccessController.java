@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.qa.penHeavenAPI.service.AccessService;
 
-@Path("/account")
+@Path("/access")
 public class AccessController {
 
 	@Inject

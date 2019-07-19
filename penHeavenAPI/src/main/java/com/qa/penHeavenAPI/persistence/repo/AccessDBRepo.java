@@ -4,6 +4,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -24,9 +25,11 @@ public class AccessDBRepo implements AccessRepo {
 	private EntityManager em;
 
 	public String getAllAccounts() {
-		return j.getJSONforObject(this.em.createQuery("SELECT a FROM Account a", Account.class));
+		TypedQuery<Account> query = this.em.createQuery("SELECT a FROM Account a", Account.class);
+		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Transactional(value = TxType.REQUIRED)
 	public String createAccount(String account) {
 		this.em.persist(j.getObjectForJSON(account, Account.class));
 		return SUCCESS_ADD_ACCOUNT;
@@ -80,8 +83,11 @@ public class AccessDBRepo implements AccessRepo {
 	}
 
 	public String getAllItems() {
-		return j.getJSONforObject(this.em.createQuery("Select i FROM Item i", CatalogueItem.class));
+		TypedQuery<CatalogueItem> query = this.em.createQuery("SELECT a FROM CatalogueItem a", CatalogueItem.class);
+		return j.getJSONforObject(query.getResultList());
 	}
+
+	@Transactional(value = TxType.REQUIRED)
 
 	public String createItem(String item) {
 		this.em.persist(j.getObjectForJSON(item, CatalogueItem.class));
