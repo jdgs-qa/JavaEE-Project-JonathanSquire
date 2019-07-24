@@ -12,6 +12,7 @@ import com.qa.penHeavenAPI.exceptions.AccountNotFoundException;
 import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
 import com.qa.penHeavenAPI.persistence.domain.Account;
 import com.qa.penHeavenAPI.persistence.domain.CatalogueItem;
+import com.qa.penHeavenAPI.persistence.domain.ItemType;
 import com.qa.penHeavenAPI.util.JSONUtil;
 
 @Default
@@ -24,32 +25,39 @@ public class AccessDBRepo implements AccessRepo {
 	@PersistenceContext(unitName = "primary")
 	private EntityManager em;
 
+	@Override
 	public String getAllAccounts() {
 		TypedQuery<Account> query = this.em.createQuery("SELECT a FROM Account a", Account.class);
 		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
 	@Transactional(value = TxType.REQUIRED)
 	public String createAccount(String account) {
 		this.em.persist(j.getObjectForJSON(account, Account.class));
 		return SUCCESS_ADD_ACCOUNT;
 	}
 
+	@Override
 	@Transactional(value = TxType.REQUIRED)
 	public String deleteAccount(String username) {
-		Account a = this.em.find(Account.class, username);
+		Account a = this.em.createQuery("SELECT DISTINCT a FROM Account a WHERE a.userName = :un", Account.class)
+				.setParameter("un", username).getSingleResult();
 		if (a == null) {
-			throw new AccountNotFoundException();
+			return FAIL_DEL_ACCOUNT;
 		} else {
 			this.em.remove(a);
+			return SUCCESS_DEL_ACCOUNT;
 		}
-		return SUCCESS_DEL_ACCOUNT;
+
 	}
 
+	@Override
 	@Transactional(value = TxType.REQUIRED)
 	public String updateAccount(String username, String account) {
 		Account aNew = j.getObjectForJSON(account, Account.class);
-		Account aOld = this.em.find(Account.class, username);
+		Account aOld = this.em.createQuery("SELECT DISTINCT a FROM Account a WHERE a.userName = :un", Account.class)
+				.setParameter("un", username).getSingleResult();
 		if (aOld == null) {
 			throw new AccountNotFoundException();
 		} else {
@@ -57,44 +65,59 @@ public class AccessDBRepo implements AccessRepo {
 			aOld.setFirstName(aNew.getFirstName());
 			aOld.setLastName(aNew.getLastName());
 			aOld.setUserName(aNew.getUserName());
+			aOld.setPassword(aNew.getPassword());
 			this.em.persist(aOld);
+			return SUCCESS_UPDATE_ACCOUNT;
 		}
-		return null;
 	}
 
+	@Override
 	public String getAccountByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<Account> query = this.em
+				.createQuery("SELECT DISTINCT a FROM Account a WHERE a.userName = :un", Account.class)
+				.setParameter("un", username);
+		return j.getJSONforObject(query.getSingleResult());
 	}
 
+	@Override
 	public String getAccountsByFirstName(String firstName) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<Account> query = this.em
+				.createQuery("SELECT a FROM Account a WHERE a.firstName LIKE :fn", Account.class)
+				.setParameter("fn", firstName).setMaxResults(10);
+		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
 	public String getAccountByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<Account> query = this.em.createQuery("SELECT a FROM Account a WHERE a.email LIKE :e", Account.class)
+				.setParameter("e", email).setMaxResults(10);
+		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
 	public String getAccountsByLastName(String lastName) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<Account> query = this.em
+				.createQuery("SELECT a FROM Account a WHERE a.lastName LIKE :ln", Account.class)
+				.setParameter("ln", lastName).setMaxResults(10);
+		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
 	public String getAllItems() {
 		TypedQuery<CatalogueItem> query = this.em.createQuery("SELECT a FROM CatalogueItem a", CatalogueItem.class);
 		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
 	@Transactional(value = TxType.REQUIRED)
 	public String createItem(String item) {
 		this.em.persist(j.getObjectForJSON(item, CatalogueItem.class));
 		return SUCCESS_ADD_ITEM;
 	}
 
+	@Override
 	@Transactional(value = TxType.REQUIRED)
-	public String deleteItem(String itemId) {
+	public String deleteItem(Long itemId) {
 		CatalogueItem i = this.em.find(CatalogueItem.class, itemId);
 		if (i == null) {
 			throw new ItemNotFoundExcpetion();
@@ -105,8 +128,9 @@ public class AccessDBRepo implements AccessRepo {
 
 	}
 
+	@Override
 	@Transactional(value = TxType.REQUIRED)
-	public String updateItem(String itemId, String item) {
+	public String updateItem(Long itemId, String item) {
 		CatalogueItem iNew = j.getObjectForJSON(item, CatalogueItem.class);
 		CatalogueItem iOld = this.em.find(CatalogueItem.class, itemId);
 		if (iOld == null) {
@@ -121,24 +145,36 @@ public class AccessDBRepo implements AccessRepo {
 		}
 	}
 
+	@Override
 	public String getItemByName(String itemName) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<CatalogueItem> query = this.em
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemName LIKE :itemName %", CatalogueItem.class)
+				.setParameter("itemName", itemName).setMaxResults(10);
+		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
 	public String getItemsByBrand(String brand) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<CatalogueItem> query = this.em
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemBrand LIKE :itemBrand %", CatalogueItem.class)
+				.setParameter("itemBrand", brand).setMaxResults(10);
+		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
 	public String getItemsByColour(String colour) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<CatalogueItem> query = this.em
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemColour LIKE :colour %", CatalogueItem.class)
+				.setParameter("colour", colour).setMaxResults(10);
+		return j.getJSONforObject(query.getResultList());
 	}
 
-	public String getItemsByType(String type) {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public String getItemsByType(ItemType type) {
+		TypedQuery<CatalogueItem> query = this.em
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemType LIKE :type %", CatalogueItem.class)
+				.setParameter("type", type).setMaxResults(10);
+		return j.getJSONforObject(query.getResultList());
 	}
 
 }

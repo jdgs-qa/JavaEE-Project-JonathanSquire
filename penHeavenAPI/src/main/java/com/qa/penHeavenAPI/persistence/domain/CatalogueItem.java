@@ -1,5 +1,6 @@
 package com.qa.penHeavenAPI.persistence.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,8 +15,12 @@ public class CatalogueItem {
 	private Long itemId;
 
 	private String itemName;
+
 	private String itemBrand;
-	private String itemType;
+
+	@Column(nullable = false)
+	private ItemType itemType;
+
 	private String itemColour;
 
 	public Long getItemId() {
@@ -42,11 +47,11 @@ public class CatalogueItem {
 		this.itemBrand = itemBrand;
 	}
 
-	public String getItemType() {
+	public ItemType getItemType() {
 		return itemType;
 	}
 
-	public void setItemType(String itemType) {
+	public void setItemType(ItemType itemType) {
 		this.itemType = itemType;
 	}
 
@@ -58,7 +63,7 @@ public class CatalogueItem {
 		this.itemColour = itemColour;
 	}
 
-	public CatalogueItem(Long itemId, String itemName, String itemBrand, String itemType, String itemColour) {
+	public CatalogueItem(Long itemId, String itemName, String itemBrand, ItemType itemType, String itemColour) {
 		super();
 		this.itemId = itemId;
 		this.itemName = itemName;

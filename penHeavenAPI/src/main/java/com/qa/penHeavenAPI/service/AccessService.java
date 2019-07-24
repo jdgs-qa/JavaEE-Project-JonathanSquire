@@ -2,6 +2,7 @@ package com.qa.penHeavenAPI.service;
 
 import com.qa.penHeavenAPI.exceptions.AccountNotFoundException;
 import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
+import com.qa.penHeavenAPI.persistence.domain.ItemType;
 
 public interface AccessService {
 
@@ -25,9 +26,9 @@ public interface AccessService {
 
 	String createItem(String item);
 
-	String deleteItem(String itemId) throws ItemNotFoundExcpetion;
+	String deleteItem(Long itemId) throws ItemNotFoundExcpetion;
 
-	String updateItem(String itemId, String item) throws ItemNotFoundExcpetion;
+	String updateItem(Long itemId, String item) throws ItemNotFoundExcpetion;
 
 	String getItemByName(String itemName) throws ItemNotFoundExcpetion;
 
@@ -35,5 +36,5 @@ public interface AccessService {
 
 	String getItemsByColour(String colour) throws ItemNotFoundExcpetion;
 
-	String getItemsByType(String type) throws ItemNotFoundExcpetion;
+	String getItemsByType(ItemType type) throws ItemNotFoundExcpetion;
 }

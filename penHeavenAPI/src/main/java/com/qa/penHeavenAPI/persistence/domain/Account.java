@@ -12,12 +12,28 @@ public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long userId;
+
+	@Column(nullable = false)
 	private String userName;
+
+	@Column(nullable = false)
 	private String firstName;
+
+	@Column(nullable = false)
 	private String lastName;
 
 	@Column(unique = true)
 	private String email;
+
+	private String password;
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -59,13 +75,14 @@ public class Account {
 		this.email = email;
 	}
 
-	public Account(Long userId, String userName, String firstName, String lastName, String email) {
+	public Account(Long userId, String userName, String firstName, String lastName, String email, String password) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.password = password;
 	}
 
 	public Account() {
