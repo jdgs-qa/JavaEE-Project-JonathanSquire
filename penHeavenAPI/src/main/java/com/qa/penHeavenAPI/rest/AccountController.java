@@ -9,6 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.qa.penHeavenAPI.service.AccessService;
 
@@ -41,15 +43,19 @@ public class AccountController {
 	@POST
 	@Path("/update/{un}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String updateaccount(@PathParam("un") String userName, String account) {
+	public String updateAccount(@PathParam("un") String userName, String account) {
 		return this.accessService.updateAccount(userName, account);
 	}
 
 	@GET
 	@Path("/searchUsername/{un}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getaccountByUserName(@PathParam("un") String username) {
-		return this.accessService.getAccountByUsername(username);
+	public Response getaccountByUserName(@PathParam("un") String username) {
+		try {
+			return Response.ok(this.accessService.getAccountByUsername(username)).build();
+		} catch (Exception e) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 	}
 
 	@GET

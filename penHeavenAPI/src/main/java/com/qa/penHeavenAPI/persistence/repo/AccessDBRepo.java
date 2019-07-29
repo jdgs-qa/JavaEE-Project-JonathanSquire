@@ -1,5 +1,7 @@
 package com.qa.penHeavenAPI.persistence.repo;
 
+import java.util.Optional;
+
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -72,11 +74,17 @@ public class AccessDBRepo implements AccessRepo {
 	}
 
 	@Override
-	public String getAccountByUsername(String username) {
+	public String getAccountByUsername(String username) throws AccountNotFoundException {
 		TypedQuery<Account> query = this.em
 				.createQuery("SELECT DISTINCT a FROM Account a WHERE a.userName = :un", Account.class)
 				.setParameter("un", username);
-		return j.getJSONforObject(query.getSingleResult());
+		Optional<Account> account = null;
+		try {
+			account = Optional.of(query.getSingleResult());
+		} catch (Exception e) {
+			throw new AccountNotFoundException();
+		}
+		return j.getJSONforObject(account.orElseThrow(() -> new AccountNotFoundException()));
 	}
 
 	@Override
