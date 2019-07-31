@@ -147,6 +147,7 @@ public class AccessServiceImp implements AccessService {
 		Account a = (Account) this.accessRepo.getAccountLogin(username);
 		if (a.getPassword().equals(password)) {
 			a.setPassword(null);
+			a.setUserId(null);
 			return j.getJSONforObject(a);
 		} else {
 			throw new PasswordMissmatchException();

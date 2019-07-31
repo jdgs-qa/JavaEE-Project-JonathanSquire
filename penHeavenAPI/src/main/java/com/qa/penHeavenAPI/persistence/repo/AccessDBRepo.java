@@ -196,7 +196,7 @@ public class AccessDBRepo implements AccessRepo {
 		} catch (Exception e) {
 			throw new AccountNotFoundException();
 		}
-		return j.getJSONforObject(account.orElseThrow(() -> new AccountNotFoundException()));
+		return account.orElseThrow(() -> new AccountNotFoundException());
 	}
 
 }
