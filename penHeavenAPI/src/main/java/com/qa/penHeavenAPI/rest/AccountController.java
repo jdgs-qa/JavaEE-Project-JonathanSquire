@@ -76,7 +76,6 @@ public class AccountController {
 
 	@GET
 	@Path("/login/{un}")
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response getaccountLogin(@PathParam("un") String username, String password) {
 		try {
 			return Response.ok(this.accessService.getAccountLogin(username, password)).build();
