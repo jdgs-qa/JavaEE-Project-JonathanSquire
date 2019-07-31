@@ -50,4 +50,6 @@ public interface AccessRepo {
 
 	String getItemsByType(ItemType type);
 
+	Object getAccountLogin(String username);
+
 }

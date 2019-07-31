@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import com.qa.penHeavenAPI.exceptions.AccountNotFoundException;
 import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
+import com.qa.penHeavenAPI.persistence.domain.Account;
 import com.qa.penHeavenAPI.persistence.domain.ItemType;
 import com.qa.penHeavenAPI.persistence.repo.AccessRepo;
 import com.qa.penHeavenAPI.util.JSONUtil;
@@ -125,6 +126,17 @@ public class AccessServiceImp implements AccessService {
 	@Override
 	public String getItemsByType(ItemType type) throws ItemNotFoundExcpetion {
 		return this.accessRepo.getItemsByType(type);
+	}
+
+	@Override
+	public Object getAccountLogin(String username, String password) {
+		Account a = (Account) this.accessRepo.getAccountLogin(username);
+		if (a.getPassword().equals(password)) {
+			a.setPassword(null);
+			return j.getJSONforObject(a);
+		} else {
+			throw new AccountNotFoundException();
+		}
 	}
 
 }

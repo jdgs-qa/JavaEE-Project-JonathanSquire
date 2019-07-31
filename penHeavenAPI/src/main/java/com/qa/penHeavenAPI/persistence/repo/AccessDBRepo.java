@@ -185,4 +185,18 @@ public class AccessDBRepo implements AccessRepo {
 		return j.getJSONforObject(query.getResultList());
 	}
 
+	@Override
+	public Object getAccountLogin(String username) {
+		TypedQuery<Account> query = this.em
+				.createQuery("SELECT DISTINCT a FROM Account a WHERE a.userName = :un", Account.class)
+				.setParameter("un", username);
+		Optional<Account> account = null;
+		try {
+			account = Optional.of(query.getSingleResult());
+		} catch (Exception e) {
+			throw new AccountNotFoundException();
+		}
+		return j.getJSONforObject(account.orElseThrow(() -> new AccountNotFoundException()));
+	}
+
 }
