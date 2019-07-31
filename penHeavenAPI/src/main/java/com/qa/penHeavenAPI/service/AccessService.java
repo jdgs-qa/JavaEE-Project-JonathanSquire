@@ -37,4 +37,6 @@ public interface AccessService {
 	String getItemsByColour(String colour) throws ItemNotFoundExcpetion;
 
 	String getItemsByType(ItemType type) throws ItemNotFoundExcpetion;
+
+	Object getAccountLogin(String username, String password);
 }

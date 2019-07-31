@@ -23,28 +23,44 @@ public class AccountController {
 	@GET
 	@Path("/getAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllaccounts() {
-		return this.accessService.getAllAccounts();
+	public Response getAllaccounts() {
+		try {
+			return Response.ok(this.accessService.getAllAccounts()).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@POST
 	@Path("/create")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String createaccount(String account) {
-		return this.accessService.createAccount(account);
+	public Response createaccount(String account) {
+		try {
+			return Response.ok(this.accessService.createAccount(account)).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@DELETE
 	@Path("/delete/{un}")
-	public String deleteaccount(@PathParam("un") String userName) {
-		return this.accessService.deleteAccount(userName);
+	public Response deleteaccount(@PathParam("un") String userName) {
+		try {
+			return Response.ok(this.accessService.deleteAccount(userName)).build();
+		} catch (Exception e) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 	}
 
 	@POST
 	@Path("/update/{un}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String updateAccount(@PathParam("un") String userName, String account) {
-		return this.accessService.updateAccount(userName, account);
+	public Response updateAccount(@PathParam("un") String userName, String account) {
+		try {
+			return Response.ok(this.accessService.updateAccount(userName, account)).build();
+		} catch (Exception e) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 	}
 
 	@GET
@@ -59,24 +75,47 @@ public class AccountController {
 	}
 
 	@GET
+	@Path("/login/{un}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getaccountLogin(@PathParam("un") String username, String password) {
+		try {
+			return Response.ok(this.accessService.getAccountLogin(username, password)).build();
+		} catch (Exception e) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+	}
+
+	@GET
 	@Path("/searchFirstName/{fn}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getaccountByFirstName(@PathParam("fn") String firstName) {
-		return this.accessService.getAccountsByFirstName(firstName);
+	public Response getaccountByFirstName(@PathParam("fn") String firstName) {
+		try {
+			return Response.ok(this.accessService.getAccountsByFirstName(firstName)).build();
+		} catch (Exception e) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 	}
 
 	@GET
 	@Path("/searchEmail/{e}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getaccountByEmail(@PathParam("e") String email) {
-		return this.accessService.getAccountByEmail(email);
+	public Response getaccountByEmail(@PathParam("e") String email) {
+		try {
+			return Response.ok(this.accessService.getAccountByEmail(email)).build();
+		} catch (Exception e) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 	}
 
 	@GET
 	@Path("/searchLastName/{ln}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getaccountByLastName(@PathParam("ln") String lastName) {
-		return this.accessService.getAccountsByLastName(lastName);
+	public Response getaccountByLastName(@PathParam("ln") String lastName) {
+		try {
+			return Response.ok(this.accessService.getAccountsByLastName(lastName)).build();
+		} catch (Exception e) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 	}
 
 }
