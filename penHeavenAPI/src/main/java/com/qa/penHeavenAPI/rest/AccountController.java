@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.qa.penHeavenAPI.exceptions.PasswordMissmatchException;
 import com.qa.penHeavenAPI.service.AccessService;
 
 @Path("/access/account")
@@ -26,9 +27,12 @@ public class AccountController {
 	public Response getAllaccounts() {
 		try {
 			return Response.ok(this.accessService.getAllAccounts()).build();
+		} catch (PasswordMissmatchException pme) {
+			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
+
 	}
 
 	@POST
@@ -76,7 +80,6 @@ public class AccountController {
 
 	@GET
 	@Path("/login/{un}")
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response getaccountLogin(@PathParam("un") String username, String password) {
 		try {
 			return Response.ok(this.accessService.getAccountLogin(username, password)).build();

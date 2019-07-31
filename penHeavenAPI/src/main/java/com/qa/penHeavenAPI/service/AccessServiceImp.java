@@ -2,8 +2,10 @@ package com.qa.penHeavenAPI.service;
 
 import javax.inject.Inject;
 
+import com.qa.penHeavenAPI.exceptions.AccountExistsException;
 import com.qa.penHeavenAPI.exceptions.AccountNotFoundException;
 import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
+import com.qa.penHeavenAPI.exceptions.PasswordMissmatchException;
 import com.qa.penHeavenAPI.persistence.domain.Account;
 import com.qa.penHeavenAPI.persistence.domain.ItemType;
 import com.qa.penHeavenAPI.persistence.repo.AccessRepo;
@@ -24,11 +26,23 @@ public class AccessServiceImp implements AccessService {
 
 	@Override
 	public String createAccount(String account) {
-		String out = this.accessRepo.createAccount(account);
-		if (out.equals(AccessRepo.SUCCESS_ADD_ACCOUNT)) {
-			return AccessRepo.SUCCESS_ADD_ACCOUNT;
-		} else {
-			return AccessRepo.FAIL_ADD_ACCOUNT;
+		Account a = j.getObjectForJSON(account, Account.class);
+		Boolean check;
+		try {
+			this.accessRepo.getAccountByUsername(a.getUserName());
+			check = true;
+		} catch (AccountNotFoundException anfe) {
+			check = false;
+		}
+		try {
+			if (!check) {
+				this.accessRepo.createAccount(account);
+				return AccessRepo.SUCCESS_ADD_ACCOUNT;
+			} else {
+				throw new AccountExistsException();
+			}
+		} catch (Exception e) {
+			throw new AccountExistsException();
 		}
 	}
 
@@ -38,7 +52,7 @@ public class AccessServiceImp implements AccessService {
 		if (out.equals(AccessRepo.SUCCESS_DEL_ACCOUNT)) {
 			return AccessRepo.SUCCESS_DEL_ACCOUNT;
 		} else {
-			return AccessRepo.FAIL_DEL_ACCOUNT;
+			throw new AccountNotFoundException();
 		}
 
 	}
@@ -49,7 +63,7 @@ public class AccessServiceImp implements AccessService {
 		if (out.equals(AccessRepo.SUCCESS_UPDATE_ACCOUNT)) {
 			return AccessRepo.SUCCESS_UPDATE_ACCOUNT;
 		} else {
-			return AccessRepo.FAIL_UPDATE_ACCOUNT;
+			throw new AccountNotFoundException();
 		}
 	}
 
@@ -129,13 +143,14 @@ public class AccessServiceImp implements AccessService {
 	}
 
 	@Override
-	public Object getAccountLogin(String username, String password) {
+	public Object getAccountLogin(String username, String password) throws AccountNotFoundException {
 		Account a = (Account) this.accessRepo.getAccountLogin(username);
 		if (a.getPassword().equals(password)) {
 			a.setPassword(null);
+			a.setUserId(null);
 			return j.getJSONforObject(a);
 		} else {
-			throw new AccountNotFoundException();
+			throw new PasswordMissmatchException();
 		}
 	}
 
