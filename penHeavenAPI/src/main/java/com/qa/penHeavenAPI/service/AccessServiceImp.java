@@ -149,7 +149,7 @@ public class AccessServiceImp implements AccessService {
 	}
 
 	@Override
-	public Object getAccountLogin(String userDetails) throws AccountNotFoundException {
+	public Account getAccountLogin(String userDetails) throws AccountNotFoundException {
 		Account p = j.getObjectForJSON(userDetails, Account.class);
 		String username = p.getUserName();
 		Account a = (Account) this.accessRepo.getAccountLogin(username);
@@ -159,7 +159,7 @@ public class AccessServiceImp implements AccessService {
 			a.setPassword(token);
 			this.accessRepo.addAccessHash(token);
 			a.setUserId(null);
-			return j.getJSONforObject(a);
+			return a;
 		} else {
 			throw new PasswordMissmatchException();
 		}

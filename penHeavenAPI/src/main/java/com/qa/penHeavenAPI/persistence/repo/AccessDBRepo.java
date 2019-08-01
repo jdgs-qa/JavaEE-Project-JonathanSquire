@@ -11,6 +11,8 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.qa.penHeavenAPI.exceptions.AccountNotFoundException;
 import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
 import com.qa.penHeavenAPI.persistence.domain.Account;
@@ -68,7 +70,12 @@ public class AccessDBRepo implements AccessRepo {
 			aOld.setFirstName(aNew.getFirstName());
 			aOld.setLastName(aNew.getLastName());
 			aOld.setUserName(aNew.getUserName());
-			aOld.setPassword(aNew.getPassword());
+			if (aNew.getPassword() != null) {
+				String pOld = aNew.getPassword();
+				String pNew = BCrypt.hashpw(pOld, BCrypt.gensalt());
+				aNew.setPassword(pNew);
+				aOld.setPassword(aNew.getPassword());
+			}
 			this.em.persist(aOld);
 			return SUCCESS_UPDATE_ACCOUNT;
 		}

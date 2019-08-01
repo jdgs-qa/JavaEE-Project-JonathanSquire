@@ -13,13 +13,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.qa.penHeavenAPI.exceptions.PasswordMissmatchException;
+import com.qa.penHeavenAPI.persistence.repo.AccessRepo;
 import com.qa.penHeavenAPI.service.AccessService;
+import com.qa.penHeavenAPI.util.JSONUtil;
 
 @Path("/access/account")
 public class AccountController {
 
 	@Inject
 	private AccessService accessService;
+
+	@Inject
+	JSONUtil j = new JSONUtil();
 
 	@GET
 	@Path("/getAll")
@@ -81,13 +86,13 @@ public class AccountController {
 	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getaccountLogin(String userDetails) {
+	public String getaccountLogin(String userDetails) {
 		try {
-			return Response.ok(this.accessService.getAccountLogin(userDetails)).build();
+			return j.getJSONforObject(this.accessService.getAccountLogin(userDetails));
 		} catch (PasswordMissmatchException pme) {
-			return Response.status(Status.FORBIDDEN).build();
+			return AccessRepo.FAIL_ADD_ACCOUNT;
 		} catch (Exception e) {
-			return Response.status(Status.NOT_FOUND).build();
+			return AccessRepo.FAIL_ADD_ACCOUNT;
 		}
 	}
 
