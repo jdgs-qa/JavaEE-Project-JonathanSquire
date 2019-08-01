@@ -83,6 +83,8 @@ public class AccountController {
 	public Response getaccountLogin(@PathParam("un") String username, String password) {
 		try {
 			return Response.ok(this.accessService.getAccountLogin(username, password)).build();
+		} catch (PasswordMissmatchException pme) {
+			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			return Response.status(Status.NOT_FOUND).build();
 		}

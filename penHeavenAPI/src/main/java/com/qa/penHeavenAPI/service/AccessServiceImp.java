@@ -2,6 +2,8 @@ package com.qa.penHeavenAPI.service;
 
 import javax.inject.Inject;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.qa.penHeavenAPI.exceptions.AccountExistsException;
 import com.qa.penHeavenAPI.exceptions.AccountNotFoundException;
 import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
@@ -36,7 +38,11 @@ public class AccessServiceImp implements AccessService {
 		}
 		try {
 			if (!check) {
-				this.accessRepo.createAccount(account);
+				String pOld = a.getPassword();
+				String pNew = BCrypt.hashpw(pOld, BCrypt.gensalt());
+				a.setPassword(pNew);
+				String accountNew = j.getJSONforObject(a);
+				this.accessRepo.createAccount(accountNew);
 				return AccessRepo.SUCCESS_ADD_ACCOUNT;
 			} else {
 				throw new AccountExistsException();
@@ -145,8 +151,10 @@ public class AccessServiceImp implements AccessService {
 	@Override
 	public Object getAccountLogin(String username, String password) throws AccountNotFoundException {
 		Account a = (Account) this.accessRepo.getAccountLogin(username);
-		if (a.getPassword().equals(password)) {
-			a.setPassword(null);
+		if (BCrypt.checkpw(password, a.getPassword())) {
+			String token = BCrypt.hashpw(username, BCrypt.gensalt());
+			a.setPassword(token);
+			this.accessRepo.addAccessHash(token);
 			a.setUserId(null);
 			return j.getJSONforObject(a);
 		} else {

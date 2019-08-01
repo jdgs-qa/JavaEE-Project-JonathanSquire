@@ -1,5 +1,6 @@
 package com.qa.penHeavenAPI.persistence.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.inject.Default;
@@ -156,33 +157,58 @@ public class AccessDBRepo implements AccessRepo {
 	@Override
 	public String getItemByName(String itemName) {
 		TypedQuery<CatalogueItem> query = this.em
-				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemName LIKE :itemName %", CatalogueItem.class)
-				.setParameter("itemName", itemName).setMaxResults(10);
-		return j.getJSONforObject(query.getResultList());
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemName LIKE :itemName", CatalogueItem.class)
+				.setParameter("itemName", itemName);
+		Optional<List<CatalogueItem>> cat = null;
+		try {
+			cat = Optional.of(query.getResultList());
+		} catch (Exception e) {
+			throw new ItemNotFoundExcpetion();
+		}
+		return j.getJSONforObject(cat.orElseThrow(() -> new ItemNotFoundExcpetion()));
+
 	}
 
 	@Override
 	public String getItemsByBrand(String brand) {
 		TypedQuery<CatalogueItem> query = this.em
-				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemBrand LIKE :itemBrand %", CatalogueItem.class)
-				.setParameter("itemBrand", brand).setMaxResults(10);
-		return j.getJSONforObject(query.getResultList());
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemBrand LIKE :itemBrand", CatalogueItem.class)
+				.setParameter("itemBrand", brand);
+		Optional<List<CatalogueItem>> cat = null;
+		try {
+			cat = Optional.of(query.getResultList());
+		} catch (Exception e) {
+			throw new ItemNotFoundExcpetion();
+		}
+		return j.getJSONforObject(cat.orElseThrow(() -> new ItemNotFoundExcpetion()));
 	}
 
 	@Override
 	public String getItemsByColour(String colour) {
 		TypedQuery<CatalogueItem> query = this.em
-				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemColour LIKE :colour %", CatalogueItem.class)
-				.setParameter("colour", colour).setMaxResults(10);
-		return j.getJSONforObject(query.getResultList());
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemColour LIKE :colour", CatalogueItem.class)
+				.setParameter("colour", colour);
+		Optional<List<CatalogueItem>> cat = null;
+		try {
+			cat = Optional.of(query.getResultList());
+		} catch (Exception e) {
+			throw new ItemNotFoundExcpetion();
+		}
+		return j.getJSONforObject(cat.orElseThrow(() -> new ItemNotFoundExcpetion()));
 	}
 
 	@Override
 	public String getItemsByType(ItemType type) {
 		TypedQuery<CatalogueItem> query = this.em
-				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemType LIKE :type %", CatalogueItem.class)
-				.setParameter("type", type).setMaxResults(10);
-		return j.getJSONforObject(query.getResultList());
+				.createQuery("SELECT c FROM CatalogueItem c WHERE c.itemType LIKE :type", CatalogueItem.class)
+				.setParameter("type", type);
+		Optional<List<CatalogueItem>> cat = null;
+		try {
+			cat = Optional.of(query.getResultList());
+		} catch (Exception e) {
+			throw new ItemNotFoundExcpetion();
+		}
+		return j.getJSONforObject(cat.orElseThrow(() -> new ItemNotFoundExcpetion()));
 	}
 
 	@Override
@@ -197,6 +223,26 @@ public class AccessDBRepo implements AccessRepo {
 			throw new AccountNotFoundException();
 		}
 		return account.orElseThrow(() -> new AccountNotFoundException());
+	}
+
+	@Override
+	public String addAccessHash(String hash) {
+		try {
+			this.em.persist(hash);
+			return AccessRepo.SUCCESS_ADD_HASH;
+		} catch (Exception e) {
+			return AccessRepo.FAIL_ADD_HASH;
+		}
+	}
+
+	@Override
+	public String delAccessHash(String hash) {
+		try {
+			this.em.remove(hash);
+			return AccessRepo.SUCCESS_DEL_HASH;
+		} catch (Exception e) {
+			return AccessRepo.FAIL_DEL_HASH;
+		}
 	}
 
 }
