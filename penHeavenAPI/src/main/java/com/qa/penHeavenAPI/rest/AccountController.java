@@ -78,12 +78,12 @@ public class AccountController {
 		}
 	}
 
-	@GET
+	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getaccountLogin(String password) {
+	public Response getaccountLogin(String userDetails) {
 		try {
-			return Response.ok(this.accessService.getAccountLogin(password)).build();
+			return Response.ok(this.accessService.getAccountLogin(userDetails)).build();
 		} catch (PasswordMissmatchException pme) {
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
