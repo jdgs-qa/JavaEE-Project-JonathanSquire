@@ -52,4 +52,13 @@ public interface AccessRepo {
 
 	Object getAccountLogin(String username);
 
+	public final String SUCCESS_ADD_HASH = "Hash Added successfully";
+	public final String SUCCESS_DEL_HASH = "Hash Deleted successfully";
+	public final String FAIL_ADD_HASH = "Hash Add Failed";
+	public final String FAIL_DEL_HASH = "Hash Deletion Failed";
+
+	String addAccessHash(String hash);
+
+	String delAccessHash(String hash);
+
 }

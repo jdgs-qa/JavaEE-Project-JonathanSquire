@@ -9,7 +9,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+import com.qa.penHeavenAPI.exceptions.ItemNotFoundExcpetion;
 import com.qa.penHeavenAPI.persistence.domain.ItemType;
 import com.qa.penHeavenAPI.service.AccessService;
 
@@ -22,56 +25,97 @@ public class CatalogueController {
 	@GET
 	@Path("/getAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllItems() {
-		return this.accessService.getAllItems();
+	public Response getAllItems() {
+		try {
+			return Response.ok(this.accessService.getAllItems()).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@POST
 	@Path("/create")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String createItem(String item) {
-		return this.accessService.createItem(item);
+	public Response createItem(String item) {
+		try {
+			return Response.ok(this.accessService.createItem(item)).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@DELETE
 	@Path("/delete/{id}")
-	public String deleteItem(@PathParam("id") Long itemId) {
-		return this.accessService.deleteItem(itemId);
+	public Response deleteItem(@PathParam("id") Long itemId) {
+		try {
+			return Response.ok(this.accessService.deleteItem(itemId)).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@POST
 	@Path("/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String updateItem(@PathParam("id") Long itemId, String item) {
-		return this.accessService.updateItem(itemId, item);
+	public Response updateItem(@PathParam("id") Long itemId, String item) {
+		try {
+			return Response.ok(this.accessService.updateItem(itemId, item)).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@GET
-	@Path("/searchColour/{c}")
+	@Path("/searchColour")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getItemByColour(@PathParam("c") String colour) {
-		return this.accessService.getItemsByColour(colour);
+	public Response getItemByColour(String colour) {
+		try {
+			return Response.ok(this.accessService.getItemsByColour(colour)).build();
+		} catch (ItemNotFoundExcpetion infe) {
+			return Response.status(Status.NOT_FOUND).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@GET
-	@Path("/searchName/{n}")
+	@Path("/searchName")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getItemByName(@PathParam("n") String name) {
-		return this.accessService.getItemByName(name);
+	public Response getItemByName(String name) {
+		try {
+			return Response.ok(this.accessService.getItemByName(name)).build();
+		} catch (ItemNotFoundExcpetion infe) {
+			return Response.status(Status.NOT_FOUND).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@GET
-	@Path("/searchType/{t}")
+	@Path("/searchType")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getItemByColour(@PathParam("t") ItemType type) {
-		return this.accessService.getItemsByType(type);
+	public Response getItemByType(ItemType type) {
+		try {
+			return Response.ok(this.accessService.getItemsByType(type)).build();
+		} catch (ItemNotFoundExcpetion infe) {
+			return Response.status(Status.NOT_FOUND).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@GET
-	@Path("/searchBrand/{b}")
+	@Path("/searchBrand")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getItemByBrand(@PathParam("b") String brand) {
-		return this.accessService.getItemsByBrand(brand);
+	public Response getItemByBrand(String brand) {
+		try {
+			return Response.ok(this.accessService.getItemsByBrand(brand)).build();
+		} catch (ItemNotFoundExcpetion infe) {
+			return Response.status(Status.NOT_FOUND).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+
 	}
 
 }
