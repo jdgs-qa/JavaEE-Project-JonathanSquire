@@ -38,5 +38,5 @@ public interface AccessService {
 
 	String getItemsByType(ItemType type) throws ItemNotFoundExcpetion;
 
-	Object getAccountLogin(String username, String password) throws AccountNotFoundException;
+	Object getAccountLogin(String password) throws AccountNotFoundException;
 }

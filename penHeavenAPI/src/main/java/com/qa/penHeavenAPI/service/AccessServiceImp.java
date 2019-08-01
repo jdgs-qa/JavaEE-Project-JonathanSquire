@@ -149,10 +149,12 @@ public class AccessServiceImp implements AccessService {
 	}
 
 	@Override
-	public Object getAccountLogin(String username, String password) throws AccountNotFoundException {
-		Account a = (Account) this.accessRepo.getAccountLogin(username);
+	public Object getAccountLogin(String password) throws AccountNotFoundException {
 		Account p = j.getObjectForJSON(password, Account.class);
-		if (BCrypt.checkpw(p.getPassword(), a.getPassword())) {
+		String username = p.getUserName();
+		Account a = (Account) this.accessRepo.getAccountLogin(username);
+		String checkPass = p.getPassword();
+		if (BCrypt.checkpw(checkPass, a.getPassword())) {
 			String token = BCrypt.hashpw(username, BCrypt.gensalt());
 			a.setPassword(token);
 			this.accessRepo.addAccessHash(token);

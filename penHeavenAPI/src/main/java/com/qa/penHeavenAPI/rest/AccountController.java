@@ -79,10 +79,11 @@ public class AccountController {
 	}
 
 	@GET
-	@Path("/login/{un}")
-	public Response getaccountLogin(@PathParam("un") String username, String password) {
+	@Path("/login")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getaccountLogin(String password) {
 		try {
-			return Response.ok(this.accessService.getAccountLogin(username, password)).build();
+			return Response.ok(this.accessService.getAccountLogin(password)).build();
 		} catch (PasswordMissmatchException pme) {
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
